@@ -5,154 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>verschlimmbessern</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Helvetica:wght@300;400&display=swap');
+
         body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+            font-family: 'Helvetica', sans-serif;
+            color: white;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
-            font-family: 'Helvetica', sans-serif;
-            background-color: #f0f0f0;
-            overflow: hidden;
-        }
-
-        .text {
-            font-size: 2em;
-            font-weight: bold;
-            animation: textBounce 2s infinite;
-        }
-
-        .recycling-logo {
-            width: 150px;
-            height: 150px;
-            margin-top: 20px;
-            perspective: 1000px;
-        }
-
-        .recycling-logo-inner {
-            width: 100%;
-            height: 100%;
             position: relative;
-            transform-style: preserve-3d;
-            animation: rotate 5s infinite linear;
         }
-
-        .recycling-logo-inner div {
+        canvas {
+            display: block;
             position: absolute;
-            width: 0; 
-            height: 0; 
-            border-style: solid;
-            border-width: 0 75px 129.9px 75px;
-            border-color: transparent transparent red transparent;
-            transform-origin: 50% 50%;
+            top: 0;
+            left: 0;
         }
-
-        .recycling-logo-inner div:nth-child(1) {
-            transform: rotateY(0deg) translateZ(75px);
-        }
-
-        .recycling-logo-inner div:nth-child(2) {
-            transform: rotateY(120deg) translateZ(75px);
-        }
-
-        .recycling-logo-inner div:nth-child(3) {
-            transform: rotateY(240deg) translateZ(75px);
-        }
-
-        .coming-soon {
-            font-size: 1.5em;
-            margin-top: 20px;
-            color: #333;
-            animation: fadeInOut 3s infinite;
-        }
-
-        .bubbles {
+        #coming-soon, #verschlimmbessern {
             position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 200px;
-            overflow: hidden;
+            font-size: 24px;
         }
-
-        .bubble {
-            position: absolute;
-            bottom: -50px;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            animation: bubbleRise 5s infinite;
+        #coming-soon {
+            bottom: 20px;
+            font-weight: 300; /* Helvetica Light */
+            font-size: 12px; /* Small font size */
         }
-
-        @keyframes rotate {
-            from {
-                transform: rotateY(0deg);
-            }
-            to {
-                transform: rotateY(360deg);
-            }
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        @keyframes bubbleRise {
-            0% {
-                bottom: -50px;
-                opacity: 1;
-            }
-            100% {
-                bottom: 100%;
-                opacity: 0;
-            }
-        }
-
-        /* Bubble animation delays and positions */
-        .bubble:nth-child(1) {
-            left: 10%;
-            animation-delay: 0s;
-        }
-        .bubble:nth-child(2) {
-            left: 30%;
-            animation-delay: 2s;
-        }
-        .bubble:nth-child(3) {
-            left: 50%;
-            animation-delay: 4s;
-        }
-        .bubble:nth-child(4) {
-            left: 70%;
-            animation-delay: 1s;
-        }
-        .bubble:nth-child(5) {
-            left: 90%;
-            animation-delay: 3s;
+        #verschlimmbessern {
+            top: 20px;
+            font-weight: 400; /* Helvetica Normal */
         }
     </style>
 </head>
 <body>
-    <div class="text">verschlimmbessern</div>
-    <div class="recycling-logo">
-        <div class="recycling-logo-inner">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-    <div class="coming-soon">coming soon</div>
-    <div class="bubbles">
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-    </div>
+    <canvas id="canvas"></canvas>
+    
+    <div id="verschlimmbessern">verschlimmbessern</div>
+    <div id="coming-soon">coming soon</div>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const numRectangles = 30;  // Increased number of rectangles
+        const rectWidth = 300;
+        const rectHeight = 100;
+        let time = 0;
+
+        function drawRectangles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // First set of shapes (original direction)
+            const mouseX1 = canvas.width / 2 + Math.sin(time / 50) * 600; // Significantly larger movement
+            const mouseY1 = canvas.height / 2 + Math.cos(time / 50) * 600; // Significantly larger movement
+
+            const offsetX1 = (mouseX1 - canvas.width / 2) / 10;  // Increased displacement
+            const offsetY1 = (mouseY1 - canvas.height / 2) / 10;  // Increased displacement
+
+            for (let i = 0; i < numRectangles; i++) {
+                ctx.beginPath();
+                ctx.rect(
+                    canvas.width / 2 - rectWidth / 2 - i * offsetX1,
+                    canvas.height / 2 - rectHeight / 2 - i * offsetY1,
+                    rectWidth + i * 20,
+                    rectHeight + i * 20
+                );
+                ctx.strokeStyle = 'white';
+                ctx.stroke();
+            }
+
+            // Second set of shapes (opposite direction)
+            const mouseX2 = canvas.width / 2 + Math.sin(time / 50 + Math.PI) * 600; // Opposite direction
+            const mouseY2 = canvas.height / 2 + Math.cos(time / 50 + Math.PI) * 600; // Opposite direction
+
+            const offsetX2 = (mouseX2 - canvas.width / 2) / 10;  // Increased displacement
+            const offsetY2 = (mouseY2 - canvas.height / 2) / 10;  // Increased displacement
+
+            for (let i = 0; i < numRectangles; i++) {
+                ctx.beginPath();
+                ctx.rect(
+                    canvas.width / 2 - rectWidth / 2 - i * offsetX2,
+                    canvas.height / 2 - rectHeight / 2 - i * offsetY2,
+                    rectWidth + i * 20,
+                    rectHeight + i * 20
+                );
+                ctx.strokeStyle = 'white';
+                ctx.stroke();
+            }
+
+            time++;
+            requestAnimationFrame(drawRectangles);
+        }
+
+        // Initial draw
+        drawRectangles();
+    </script>
 </body>
 </html>
